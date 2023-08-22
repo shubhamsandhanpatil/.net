@@ -1,62 +1,58 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BOL
+﻿namespace BOL
 {
+
+    public enum Department { HR,SALES}
+
     public class Employee
     {
-        private int id;
-        private string name;
-        private int age;
-        private Department department;
-        private DateOnly date;
+        public int id;
+        public string firstname;
+        public string lastname;
+        public Department department;
+        public DateOnly joindate;
 
-        public Employee()
-        {
-            
+        public Employee() {
         }
 
-        public Employee(int id, string name, int age, Department department, DateOnly date)
+        public Employee(int id, string firstname, string lastname, Department department, DateOnly joindate)
         {
             this.id = id;
-            this.name = name;
-            this.age = age;
+            this.firstname = firstname;
+            this.lastname = lastname;
             this.department = department;
-            this.date = date;
+            this.joindate = joindate;
         }
 
-        public int Id
+        public int ID {
+            get { return this.id; }
+            set { this.id = value; }
+        }
+
+        public string FIRSTNAME{
+            get { return this.firstname; }
+             set { this.firstname = value; }
+        }
+
+        public string LASTNAME { 
+           get { return this.lastname; }
+           set { this.lastname = value; }
+        }
+
+        public Department DEPARTMENT { 
+             get { return this.department; }
+             set { this.department = value; }
+        }
+
+        public DateOnly JOINDATE
         {
-            get { return id; }
-            set { id = value; }
+            get { return this.joindate ; }
+            set { this.joindate = value ; }
+        
         }
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
-        public int Age
-        { 
-            get { return age; } 
-            set {  age = value; } 
-        }
-        public Department DEPARTMENT
-        {
-            get { return department; }
-            set { department = value; }
-        }
-        public DateOnly Date
-        {
-            get { return date; }
-            set { date = value; }
-        }
+
         public override string ToString()
         {
-            string data = String.Format("Id ={ 1},Name ={ 2},Age ={ 3},Department ={ 4},Date ={ 5}", this.id, this.name, this.age, this.department, this.date);
-            return data;
+            return $"{this.id} {this.firstname} {this.lastname} {this.department} {this.joindate}";
         }
-    }
-    public enum Department
-    {
-        HR,MARKETING,SALES,ADMINISTRATION
     }
 }

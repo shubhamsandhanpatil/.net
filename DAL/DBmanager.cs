@@ -1,59 +1,110 @@
 ﻿using BOL;
 using MySql.Data.MySqlClient;
-using System.Collections.Generic;
 
-namespace DAL;
-public class DBmanager
+namespace DAL
 {
-    public static string constring = @"server=localhost;port=3306;user=root;password=root123;database=dotnet";
-    public static List<Employee> getEmployees()
+    public class DBmanager
     {
-        List<Employee> list = new List<Employee>();
-        MySqlConnection conn = new MySqlConnection();
-        conn.ConnectionString = constring;
-        try
-        {
-            conn.Open();
-            MySqlCommand cmd = conn.CreateCommand();
-            string query = "select * from emp";
-            cmd.CommandText = query;
-            MySqlDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                int id = int.Parse(reader["id"].ToString());
-                string name = reader["name"].ToString();
-                int age = int.Parse(reader["age"].ToString());
-                Department department = Enum.Parse<Department>(reader["department"].ToString());
-                DateOnly date = DateOnly.FromDateTime(DateTime.Parse(reader["date"].ToString()));
-                Employee emp = new Employee(id, name, age, department, date);
-                list.Add(emp);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-        finally { conn.Close(); }
-        return list;
+        public static string connString = @"server=localhost;port=3306;user=root; password=root123;database=dotnetpractice";
 
-    }
-    public static void Delete(int id)
-    {
-        MySqlConnection conn = new MySqlConnection();
-        conn.ConnectionString = constring;
-        try
+        public static List<Employee> getAllEmployees(){ 
+        
+         List<Employee> empList = new List<Employee>();
+         
+         MySqlConnection conn = new MySqlConnection();
+
+            conn.ConnectionString = connString;
+
+            try { 
+                conn.Open(); 
+
+                MySqlCommand cmd = new MySqlCommand(); 
+
+                cmd.Connection = conn;
+
+                string query = "SELECT * FROM emp";
+
+                cmd.CommandText = query;
+
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    
+                   
+                    int id = int.Parse(reader["id"].ToString());
+                    string firstname = reader["firstname"].ToString();
+                    string lastname = reader["lastname"].ToString();
+                    Department department = Enum.Parse<Department>(reader["department"].ToString().ToUpper());
+                    // DateOnly joiningdate = DateOnly.FromDateTime(DateTime.Parse(reader["joiningdate"].ToString()));  
+                    DateOnly joindate =DateOnly.FromDateTime(DateTime.Parse( reader["joindate"].ToString()));  
+                    Employee newEmp = new Employee(id,firstname,lastname,department,joindate);
+                    empList.Add(newEmp);
+
+                }
+
+            } catch (Exception e){
+                Console.WriteLine(e.Message);
+            }  finally {
+                conn.Close(); 
+            }
+
+            return empList;
+
+            }// end of getAllEmployee Method
+
+
+        public static void insertEmployee(Employee newEmp) {
+        
+          
+            MySqlConnection conn = new MySqlConnection();
+
+            conn.ConnectionString = connString;
+
+            try { 
+                            
+                conn.Open ();
+
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+
+                string query = "insert into emp  values('" + newEmp.ID + "','" + newEmp.FIRSTNAME + "','"+newEmp.LASTNAME+"','"+newEmp.DEPARTMENT+"','"+newEmp.JOINDATE.ToString("yyyy-MM-dd")+"')";
+                cmd.CommandText = query;
+
+                cmd.ExecuteNonQuery();
+
+                 
+            }catch (Exception e) { 
+            
+            Console.WriteLine(e.Message);
+            }finally { conn.Close(); }
+
+
+        }// end of insert employee
+
+        public static void deleteEmployee(int id)
         {
-            conn.Open();
-            MySqlCommand cmd = conn.CreateCommand();
-            cmd.Connection= conn;   
-            string query = "delete from emp where id="+id;
-            cmd.CommandText = query;
-           cmd.ExecuteNonQuery();
+
+            MySqlConnection conn = new MySqlConnection();
+            conn.ConnectionString = connString;
+
+
+            try { 
+                conn.Open ();
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+
+                string query = "delete from emp where id = " + id;
+                cmd.CommandText = query;
+                cmd.ExecuteNonQuery();
+            
+            }catch (Exception e) { 
+                Console.WriteLine();
+            }finally { conn.Close(); }
+
+
+        }// end of delete employee
+
+
+
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-        finally { conn.Close(); }
-    }
 }
